@@ -1,0 +1,7 @@
+config/donoteditthisfile.conf
+config/etc
+config/keys
+config/log
+config/nginx/.htpasswd
+config/nginx/dhparams.pem
+*.sqlite3

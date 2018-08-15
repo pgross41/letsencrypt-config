@@ -1,0 +1,124 @@
+## Version 2018/04/20 - Changelog: https://github.com/linuxserver/docker-letsencrypt/commits/master/root/defaults/default
+
+# redirect all traffic to https
+server {
+	listen 80;
+	server_name _;
+	return 301 https://$host$request_uri;
+}
+
+################################################################################
+# Main server block
+################################################################################
+server {
+	listen 443 ssl default_server;
+
+	root /config/www;
+	index index.html index.htm index.php;
+
+	server_name _;
+
+	# enable subfolder method reverse proxy confs
+	include /config/nginx/proxy-confs/*.subfolder.conf;
+
+	# all ssl related config moved to ssl.conf
+	include /config/nginx/ssl.conf;
+
+	client_max_body_size 0;
+
+	location / {
+		try_files $uri $uri/ /index.html /index.php?$args =404;
+		auth_basic "Restricted";
+		auth_basic_user_file /config/nginx/.htpasswd;
+	}
+
+	location ~ \.php$ {
+		fastcgi_split_path_info ^(.+\.php)(/.+)$;
+		# With php7-cgi alone:
+		fastcgi_pass 127.0.0.1:9000;
+		# With php7-fpm:
+		#fastcgi_pass unix:/var/run/php7-fpm.sock;
+		fastcgi_index index.php;
+		include /etc/nginx/fastcgi_params;
+	}
+
+}
+
+################################################################################
+# Mobile-friendly camera feed
+################################################################################
+server {
+	listen 443 ssl;
+
+	root /config/www;
+	index index.html index.htm index.php;
+
+	server_name cams.*;
+
+	include /config/nginx/ssl.conf;
+
+	client_max_body_size 0;
+
+	location / {
+		include /config/nginx/proxy.conf;
+		proxy_pass https://192.168.1.13:8888;	
+		auth_basic "Restricted";
+		auth_basic_user_file /config/nginx/.htpasswd;
+	}
+}
+
+################################################################################
+# Stock NVR web interface (requires flash)
+################################################################################
+server {
+	listen 443 ssl;
+
+	root /config/www;
+	index index.html index.htm index.php;
+
+	server_name nvr.*;
+
+	include /config/nginx/ssl.conf;
+
+	client_max_body_size 0;
+
+	location / {
+		include /config/nginx/proxy.conf;
+		proxy_pass http://192.168.1.88:8808;
+		auth_basic "Restricted";
+		auth_basic_user_file /config/nginx/.htpasswd;
+	}
+}
+
+################################################################################
+# Stock NVR web interface (requires flash)
+################################################################################
+server {
+	listen 443 ssl;
+
+	root /config/www;
+	index index.html index.htm index.php;
+
+	server_name h-a.*;
+
+	include /config/nginx/ssl.conf;
+
+	client_max_body_size 0;
+
+	location / {
+		proxy_set_header Host $host;
+		proxy_redirect http:// https://;
+		proxy_http_version 1.1;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Upgrade $http_upgrade;
+		proxy_set_header Connection "upgrade";
+		proxy_buffering               off;
+		proxy_ssl_verify              off;
+		proxy_pass http://192.168.1.31:8123;
+		auth_basic "Restricted";
+		auth_basic_user_file /config/nginx/.htpasswd;
+	}
+}
+
+# enable subdomain method reverse proxy confs
+include /config/nginx/proxy-confs/*.subdomain.conf;
