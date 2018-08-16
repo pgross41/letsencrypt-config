@@ -2,6 +2,7 @@ Param(
   [string]$url
 )
 
+docker stop letsencrypt
 docker run `
   --rm `
   --cap-add=NET_ADMIN `

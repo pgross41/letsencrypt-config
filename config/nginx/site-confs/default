@@ -61,7 +61,7 @@ server {
 
 	location / {
 		include /config/nginx/proxy.conf;
-		proxy_pass https://192.168.1.13:8888;	
+		proxy_pass https://192.168.1.17:8888;	
 		auth_basic "Restricted";
 		auth_basic_user_file /config/nginx/.htpasswd;
 	}
