@@ -1,29 +1,33 @@
 
 
+### Enable autostart on boot
+```
+sudo ./install-autostart.sh
+```
 
 ### Create user
 ```
-docker exec -it letsencrypt htpasswd -c /config/nginx/.htpasswd <username>
+sudo docker exec -it letsencrypt htpasswd -c /config/nginx/.htpasswd <username>
 ```
 
 ### Add user
 ```
-docker exec -it letsencrypt htpasswd /config/nginx/.htpasswd <username>
+sudo docker exec -it letsencrypt htpasswd /config/nginx/.htpasswd <username>
 ```
 
 ### Logs in realtime
 ```
-docker logs -f letsencrypt
+sudo docker logs -f letsencrypt
 ```
 
 ### View banned IPs
 ```
-docker exec -it letsencrypt fail2ban-client status nginx-http-auth
+sudo docker exec -it letsencrypt fail2ban-client status nginx-http-auth
 ```
 
 ### View fail2ban log
 ```
-docker exec -it letsencrypt cat /config/log/fail2ban/fail2ban.log
+sudo docker exec -it letsencrypt cat /config/log/fail2ban/fail2ban.log
 ```
 
 ### Host IP from inside container (host.docker.internal equivalent)
