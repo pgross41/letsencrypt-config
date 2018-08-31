@@ -10,7 +10,7 @@ sudo docker run \
   -e PGID=50 -e PUID=1000  \
   -e EMAIL=pgross41@gmail.com \
   -e URL=$url \
-  -e SUBDOMAINS=nvr,cams,h-a,configurator \
+  -e SUBDOMAINS=nvr,cams,h-a,configurator,pihole \
   -e VALIDATION=http \
   -p 80:80 -p 443:443 \
   -e TZ=America/Chicago \
